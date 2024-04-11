@@ -1,9 +1,10 @@
-import { Hono } from 'hono'
+import { Hono } from "hono";
+import packageJson from "../package.json";
 
-const app = new Hono()
+const app = new Hono();
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+app.get("/", (c) =>
+  c.json({ name: "Satua API", version: packageJson.version, status: "ok" }),
+);
 
-export default app
+export default app;
