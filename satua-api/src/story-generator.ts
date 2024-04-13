@@ -1,4 +1,5 @@
 import { Ai } from "@cloudflare/ai";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { Story } from "./story";
 
@@ -49,6 +50,7 @@ export class StoryGenerator {
 
   private constructStory(json: StoryResponse): Story {
     return new Story(
+      uuidv4(),
       json.keywords,
       json.genre,
       json.theme,

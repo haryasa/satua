@@ -4,16 +4,20 @@
   "scripts": {
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "migrate": "npx wrangler d1 migrations apply satua-prod --local",
+    "migrate-prod": "npx wrangler d1 migrations apply satua-prod --remote"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.2.1",
     "hono": "^4.2.3",
+    "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@cloudflare/ai": "^1.1.0",
     "@cloudflare/workers-types": "^4.20240403.0",
+    "@types/uuid": "^9.0.8",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "3.2.5",

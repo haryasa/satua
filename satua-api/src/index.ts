@@ -5,9 +5,11 @@ import { z } from "zod";
 import packageJson from "../package.json";
 import { Story } from "./story";
 import { StoryGenerator } from "./story-generator";
+import { StoryRepository } from "./story-repository";
 
 type Bindings = {
   AI: Ai;
+  DB: D1Database;
 };
 
 const GenerateStoryDto = z.object({
@@ -28,8 +30,16 @@ app.get("/", (c) => {
 app.post("/generate", zValidator("json", GenerateStoryDto), async (c) => {
   const generateStoryDto: GenerateStoryDto = c.req.valid("json");
   const storyGenerator: StoryGenerator = new StoryGenerator(c.env.AI);
+  const storyRepository: StoryRepository = new StoryRepository(c.env.DB);
   const story: Story = await storyGenerator.generate(generateStoryDto.seed);
+  await storyRepository.save(story);
   return c.json(story);
+});
+
+app.get("/stories", async (c) => {
+  const storyRepository: StoryRepository = new StoryRepository(c.env.DB);
+  const stories: Story[] = await storyRepository.getAll();
+  return c.json(stories);
 });
 
 export default app;

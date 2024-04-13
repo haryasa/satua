@@ -12,10 +12,10 @@ compatibility_date = "2023-12-01"
 # binding = "MY_BUCKET"
 # bucket_name = "my-bucket"
 
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "my-database"
-# database_id = ""
+[[d1_databases]]
+binding = "DB"
+database_name = "satua-prod"
+database_id = "5bcf4e87-cb90-47e1-b9e8-dceace29c1cd"
 
-# [ai]
-# binding = "AI"
+[ai]
+binding = "AI"

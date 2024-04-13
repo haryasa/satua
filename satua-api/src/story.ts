@@ -1,5 +1,6 @@
 export class Story {
   constructor(
+    public id: string,
     public keywords: string[],
     public genre: string,
     public theme: string,
