@@ -1,18 +1,20 @@
-import { Ai } from "@cloudflare/ai";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
+import { BaseTextGenerator, ModelName } from "./base-text-generator";
 import { Story } from "./story";
 
 type Messages = { role: "system" | "user"; content: string }[];
 
-export class StoryGenerator {
-  constructor(private ai: Ai) {}
-
+export class StoryGenerator extends BaseTextGenerator<
+  typeof storyResponseSchema
+> {
   async generate(seedWord: string): Promise<Story> {
     console.log(`Generating story for seed word: ${seedWord}`);
-    const messages: Messages = this.constructMessages(seedWord);
-    const response: string = await this.runLlm(messages);
-    const json: StoryResponse = this.parseResponse(response);
+    const json: StoryResponse = await this.run({
+      messages: this.constructMessages(seedWord),
+      responseSchema: storyResponseSchema,
+      model: ModelName.GEMMA_7B,
+    });
     return this.constructStory(json);
   }
 
@@ -22,30 +24,6 @@ export class StoryGenerator {
       { role: "user", content: COMMAND_PROMPT },
       { role: "user", content: `Seed word: ${seedWord}` },
     ];
-  }
-
-  private async runLlm(messages: Messages): Promise<string> {
-    const result = (await this.ai.run("@cf/google/gemma-7b-it-lora", {
-      messages,
-      max_tokens: 5000,
-    })) as { response?: string };
-    return result.response ?? "";
-  }
-
-  private parseResponse(response: string): StoryResponse {
-    try {
-      const jsonString: string = this.extractJsonString(response);
-      return ResponseSchema.parse(JSON.parse(jsonString));
-    } catch (e) {
-      throw new Error(`Failed to parse response: ${e}`);
-    }
-  }
-
-  private extractJsonString(text: string): string {
-    const jsonPattern = /{[\s\S]*}/;
-    const match = RegExp(jsonPattern).exec(text);
-    if (!match) throw new Error("No JSON object found in response");
-    return match[0];
   }
 
   private constructStory(json: StoryResponse): Story {
@@ -64,7 +42,7 @@ export class StoryGenerator {
   }
 }
 
-const ResponseSchema = z.object({
+const storyResponseSchema = z.object({
   keywords: z.array(z.string()),
   genre: z.string(),
   theme: z.string(),
@@ -76,7 +54,7 @@ const ResponseSchema = z.object({
   pointOfView: z.string(),
 });
 
-type StoryResponse = z.infer<typeof ResponseSchema>;
+type StoryResponse = z.infer<typeof storyResponseSchema>;
 
 const SYSTEM_PROMPT: string = `I want you to act as a professional and creative writer.`;
 
