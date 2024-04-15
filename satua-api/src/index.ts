@@ -12,10 +12,10 @@ type Bindings = {
   DB: D1Database;
 };
 
-const GenerateStoryDto = z.object({
+const generateStoryDtoSchema = z.object({
   seed: z.string(),
 });
-type GenerateStoryDto = z.infer<typeof GenerateStoryDto>;
+type GenerateStoryDto = z.infer<typeof generateStoryDtoSchema>;
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -27,7 +27,7 @@ app.get("/", (c) => {
   });
 });
 
-app.post("/generate", zValidator("json", GenerateStoryDto), async (c) => {
+app.post("/generate", zValidator("json", generateStoryDtoSchema), async (c) => {
   const generateStoryDto: GenerateStoryDto = c.req.valid("json");
   const storyGenerator: StoryGenerator = new StoryGenerator(c.env.AI);
   const storyRepository: StoryRepository = new StoryRepository(c.env.DB);
