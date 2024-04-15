@@ -53,10 +53,9 @@ const storyResponseSchema = z.object({
   characters: z.array(z.object({ name: z.string(), description: z.string() })),
   pointOfView: z.string(),
 });
-
 type StoryResponse = z.infer<typeof storyResponseSchema>;
 
-const SYSTEM_PROMPT: string = `I want you to act as a professional and creative writer.`;
+const SYSTEM_PROMPT: string = `I want you to act as a professional and creative story writer.`;
 
 const COMMAND_PROMPT: string = `# OBJECTIVE #
 I want you to create an engaging story idea. Use these step-by-step process:
@@ -75,7 +74,7 @@ Generate the following metadata for each story, based on [KEYWORDS]:
 10. POINT_OF_VIEW: What is the point of view of the story?
 
 # RESPONSE #
-Only response in JSON format. The JSON should contain the following fields:
+Only response in JSON format. The JSON should contains the following fields:
 - keywords: string[]
 - genre: string
 - theme: string
@@ -84,4 +83,7 @@ Only response in JSON format. The JSON should contain the following fields:
 - tone: string
 - setting: string
 - characters: { name: string, description: string }[]
-- pointOfView: string`;
+- pointOfView: string
+
+# START GENERATING #
+Start generating after I give you the seed word.`;
