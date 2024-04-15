@@ -1,19 +1,30 @@
+import { Ai } from "@cloudflare/ai";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
-import { BaseTextGenerator, ModelName } from "./base-text-generator";
+import { BaseTextGenerator } from "./base-text-generator";
 import { Story } from "./story";
+import { ModelName } from "./text-generator-model-factory";
 
 type Messages = { role: "system" | "user"; content: string }[];
 
-export class StoryGenerator extends BaseTextGenerator<
-  typeof storyResponseSchema
-> {
+export class StoryGenerator extends BaseTextGenerator {
+  constructor(
+    private ai: Ai,
+    private openaiApiKey: string,
+  ) {
+    super();
+  }
+
   async generate(seedWord: string): Promise<Story> {
     console.log(`Generating story for seed word: ${seedWord}`);
     const json: StoryResponse = await this.run({
       messages: this.constructMessages(seedWord),
       responseSchema: storyResponseSchema,
-      model: ModelName.GEMMA_7B,
+      config: {
+        model: ModelName.GPT_35_TURBO,
+        apiKey: this.openaiApiKey,
+        jsonMode: true,
+      },
     });
     return this.constructStory(json);
   }

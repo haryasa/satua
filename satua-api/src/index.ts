@@ -10,6 +10,7 @@ import { StoryRepository } from "./story-repository";
 type Bindings = {
   AI: Ai;
   DB: D1Database;
+  OPENAI_API_KEY: string;
 };
 
 const generateStoryDtoSchema = z.object({
@@ -29,7 +30,10 @@ app.get("/", (c) => {
 
 app.post("/generate", zValidator("json", generateStoryDtoSchema), async (c) => {
   const generateStoryDto: GenerateStoryDto = c.req.valid("json");
-  const storyGenerator: StoryGenerator = new StoryGenerator(c.env.AI);
+  const storyGenerator: StoryGenerator = new StoryGenerator(
+    c.env.AI,
+    c.env.OPENAI_API_KEY,
+  );
   const storyRepository: StoryRepository = new StoryRepository(c.env.DB);
   const story: Story = await storyGenerator.generate(generateStoryDto.seed);
   await storyRepository.save(story);
