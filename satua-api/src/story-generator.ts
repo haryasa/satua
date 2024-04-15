@@ -1,9 +1,9 @@
 import { Ai } from "@cloudflare/ai";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
-import { BaseTextGenerator } from "./base-text-generator";
 import { Story } from "./story";
-import { ModelName } from "./text-generator-model-factory";
+import { BaseTextGenerator } from "./text-generator/base-text-generator";
+import { ModelName } from "./text-generator/text-generator-model-factory";
 
 type Messages = { role: "system" | "user"; content: string }[];
 
