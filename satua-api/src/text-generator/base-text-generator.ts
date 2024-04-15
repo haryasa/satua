@@ -20,15 +20,7 @@ export abstract class BaseTextGenerator {
       request.messages,
       request.config,
     );
-    console.debug("Raw response:", response);
-
-    const parsedResponse: ResponseType = this.parseResponse(
-      response,
-      request.responseSchema,
-    );
-    console.debug("Parsed response:", parsedResponse);
-
-    return parsedResponse;
+    return this.parseResponse(response, request.responseSchema);
   }
 
   private async runModel(
@@ -45,8 +37,13 @@ export abstract class BaseTextGenerator {
     ResponseSchema extends ZodType,
     ResponseType extends z.infer<ResponseSchema>,
   >(response: string, responseSchema: ResponseSchema): ResponseType {
-    const jsonString: string = this.extractJsonObjectFromString(response);
-    return responseSchema.parse(JSON.parse(jsonString));
+    try {
+      const jsonString: string = this.extractJsonObjectFromString(response);
+      return responseSchema.parse(JSON.parse(jsonString));
+    } catch (e) {
+      console.error(`Failed to parse response: ${e}\nResponse: ${response}`);
+      throw new Error(`Failed to parse response: ${e}`);
+    }
   }
 
   private extractJsonObjectFromString(text: string): string {
