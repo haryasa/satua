@@ -8,6 +8,7 @@ export enum ModelName {
   GEMMA_7B = "@cf/google/gemma-7b-it-lora",
   MISTRAL_7B_INSTRUCT = "@cf/mistral/mistral-7b-instruct-v0.1",
   GPT_35_TURBO = "gpt-3.5-turbo",
+  GPT_4_TURBO = "gpt-4-turbo",
 }
 
 export interface CloudflareTextGeneratorConfig {
@@ -19,7 +20,7 @@ export interface CloudflareTextGeneratorConfig {
 }
 
 export interface OpenAiTextGeneratorConfig {
-  model: ModelName.GPT_35_TURBO;
+  model: ModelName.GPT_35_TURBO | ModelName.GPT_4_TURBO;
   apiKey: string;
   jsonMode?: boolean;
 }
@@ -36,6 +37,7 @@ export class TextGeneratorModelFactory {
       case ModelName.MISTRAL_7B_INSTRUCT:
         return new CloudflareTextGeneratorModel(config.aiBinding, config.model);
       case ModelName.GPT_35_TURBO:
+      case ModelName.GPT_4_TURBO:
         return new OpenAiTextGeneratorModel(
           config.apiKey,
           config.model,

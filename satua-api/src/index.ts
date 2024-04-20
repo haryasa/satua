@@ -3,6 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { z } from "zod";
 import packageJson from "../package.json";
+import { ChapterGenerator } from "./chapter-generator";
 import { Story } from "./story";
 import { StoryGenerator } from "./story-generator";
 import { StoryRepository } from "./story-repository";
@@ -44,6 +45,23 @@ app.get("/stories", async (c) => {
   const storyRepository: StoryRepository = new StoryRepository(c.env.DB);
   const stories: Story[] = await storyRepository.getAll();
   return c.json(stories);
+});
+
+app.post("/stories/:storyId/chapters", async (c) => {
+  const storyRepository: StoryRepository = new StoryRepository(c.env.DB);
+  const story: Story | null = await storyRepository.getById(
+    c.req.param("storyId"),
+  );
+  if (!story) {
+    return c.json({ error: "Story not found" }, 404);
+  }
+
+  const chapterGenerator: ChapterGenerator = new ChapterGenerator(
+    c.env.AI,
+    c.env.OPENAI_API_KEY,
+  );
+  const intro = await chapterGenerator.generateIntro(story);
+  return c.json(intro);
 });
 
 export default app;
