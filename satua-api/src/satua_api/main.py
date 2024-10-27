@@ -12,7 +12,7 @@ def run():
     Run the crew.
     """
     inputs = {
-        'topic': 'AI LLMs'
+        'genre': 'Asian Horror'
     }
     SatuaApiCrew().crew().kickoff(inputs=inputs)
 

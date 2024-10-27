@@ -1,17 +1,24 @@
-research_task:
+write_story_idea_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is 2024.
+    Write a story idea with {genre} genre
   expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
-  agent: researcher
+    A story idea with {genre} genre. The idea should include characters, setting, plot, theme, point of view, tone and style
+  agent: story_writer
 
-reporting_task:
+review_story_idea_task:
   description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Review the story idea and provide feedback on it.
   expected_output: >
-    A fully fledge reports with the mains topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+    Rating of the story idea from 1 to 10. 1 being the worst and 10 being the best.
+    Also provide constructive feedback on the story idea. Try to be as objective as possible.
+    Present the feedback in a structured way, with sections for strengths and weaknesses.
+  agent: story_reviewer
+
+improve_story_idea_task:
+  description: >
+    Improve the story idea based on the feedback
+  expected_output: >
+    Then returns the improved story idea.
+    As the original story idea, it should include characters, setting, plot, theme, point of view, tone and style.
+    Add additional section that states how the story idea has been improved.
+  agent: story_writer

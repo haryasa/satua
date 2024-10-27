@@ -1,51 +1,52 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-
-# Uncomment the following line to use an example of a custom tool
-# from satua_api.tools.custom_tool import MyCustomTool
-
-# Check our tools documentations for more information on how to use them
-# from crewai_tools import SerperDevTool
+from crewai_tools import DallETool
 
 @CrewBase
 class SatuaApiCrew():
 	"""SatuaApi crew"""
 
 	@agent
-	def researcher(self) -> Agent:
+	def story_writer(self) -> Agent:
 		return Agent(
-			config=self.agents_config['researcher'],
-			# tools=[MyCustomTool()], # Example of custom tool, loaded on the beginning of file
+			config=self.agents_config['story_writer'],
 			verbose=True
 		)
-
+	
 	@agent
-	def reporting_analyst(self) -> Agent:
+	def story_reviewer(self) -> Agent:
 		return Agent(
-			config=self.agents_config['reporting_analyst'],
+			config=self.agents_config['story_reviewer'],
 			verbose=True
 		)
 
 	@task
-	def research_task(self) -> Task:
+	def write_story_idea_task(self) -> Task:
 		return Task(
-			config=self.tasks_config['research_task'],
+			config=self.tasks_config['write_story_idea_task'],
+			output_file='.output/story_idea.md'
 		)
 
 	@task
-	def reporting_task(self) -> Task:
+	def review_story_idea_task(self) -> Task:
 		return Task(
-			config=self.tasks_config['reporting_task'],
-			output_file='report.md'
+			config=self.tasks_config['review_story_idea_task'],
+			output_file='.output/review.md'
+		)
+
+	@task
+	def improve_story_idea_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['improve_story_idea_task'],
+			output_file='.output/final_story_idea.md'
 		)
 
 	@crew
 	def crew(self) -> Crew:
 		"""Creates the SatuaApi crew"""
 		return Crew(
-			agents=self.agents, # Automatically created by the @agent decorator
-			tasks=self.tasks, # Automatically created by the @task decorator
+			agents=self.agents,
+			tasks=self.tasks,
 			process=Process.sequential,
 			verbose=True,
-			# process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
 		)
