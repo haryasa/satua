@@ -1,0 +1,20 @@
+[project]
+name = "satua_api"
+version = "0.1.0"
+description = "satua-api using crewAI"
+authors = [{ name = "Yudi Haryasa", email = "yharyasa@gmail.com" }]
+requires-python = ">=3.10,<=3.13"
+dependencies = [
+    "crewai[tools]>=0.76.2,<1.0.0"
+]
+
+[project.scripts]
+satua_api = "satua_api.main:run"
+run_crew = "satua_api.main:run"
+train = "satua_api.main:train"
+replay = "satua_api.main:replay"
+test = "satua_api.main:test"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
